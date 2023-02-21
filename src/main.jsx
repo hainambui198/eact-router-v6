@@ -8,7 +8,8 @@ import Root, {
 } from './routes/root';
 import ErrorPage from './error-page';
 import Contact, {
-  loader as contactLoader
+  loader as contactLoader,
+  action as clickFavoriteAction,
 } from './routes/contact';
 import EditContact, {
   action as editContactAction,
@@ -27,25 +28,31 @@ const router = createBrowserRouter([
     action: rootAction,
     children: [
       {
-        index: true,
-        element: <Index />,
+        errorElement: <ErrorPage />,
+        children: [
+          {
+            index: true,
+            element: <Index />,
+          },
+          {
+            path: "/contacts/:contactId",
+            loader: contactLoader,
+            action: clickFavoriteAction,
+            element: <Contact />
+          },
+          {
+            path: "/contacts/:contactId/edit",
+            loader: contactLoader,
+            action: editContactAction,
+            element: <EditContact />
+          },
+          {
+            path: "contacts/:contactId/destroy",
+            action: deleteContactAction,
+            errorElement: <div>Oop! There was an error!</div>
+          }
+        ]
       },
-      {
-        path: "/contacts/:contactId",
-        loader: contactLoader,
-        element: <Contact />
-      },
-      {
-        path: "/contacts/:contactId/edit",
-        loader: contactLoader,
-        action: editContactAction,
-        element: <EditContact />
-      },
-      {
-        path: "contacts/:contactId/destroy",
-        action: deleteContactAction,
-        errorElement: <div>Oop! There was an error!</div>
-      }
     ],
   },
 ])
